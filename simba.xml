@@ -64,7 +64,7 @@
             <type name="version" primitiveType="uint16" description="Версия схемы сообщений"/>
         </composite>
 
-        <!-- не ебу че это -->
+        <!-- Enumerations -->
         <enum name="MDUpdateAction" encodingType="uInt8">
             <validValue name="New" description="New">0</validValue>
             <validValue name="Change" description="Change">1</validValue>
