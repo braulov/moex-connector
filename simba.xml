@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="sbe_schema.xsl" type="text/xsl"?>
+<sbe:messageSchema package="moex_spectra_simba"
+                   byteOrder="littleEndian"
+                   id="19780"
+                   version="4"
+                   xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://fixprotocol.io/2016/sbe sbe.xsd">
+
+    <types>
+        <!-- Numbers -->
+        <type name="uInt8" primitiveType="uint8"/>
+        <type name="uInt8NULL" presence="optional" primitiveType="uint8"/>
+        <type name="uInt32" primitiveType="uint32"/>
+        <type name="uInt32NULL" presence="optional" primitiveType="uint32"/>
+        <type name="uInt64" primitiveType="uint64"/>
+        <type name="uInt64NULL" presence="optional" primitiveType="uint64"/>
+        <type name="Int32" primitiveType="int32"/>
+        <type name="Int32NULL" presence="optional" primitiveType="int32"/>
+        <type name="Int64" primitiveType="int64"/>
+        <type name="Int64NULL" presence="optional" primitiveType="int64"/>
+
+        <composite name="Decimal5" description="Price type in Spectra" semanticType="Price">
+            <type name="mantissa" description="mantissa" primitiveType="int64"/>
+            <type name="exponent" description="exponent" presence="constant" primitiveType="int8">-5</type>
+        </composite>
+        <composite name="Decimal5NULL" description="Price type in Spectra" semanticType="Price">
+            <type name="mantissa" description="mantissa" presence="optional" minValue="-9223372036854775808"
+            maxValue="9223372036854775806" nullValue="9223372036854775807" primitiveType="int64"/>
+            <type name="exponent" description="exponent" presence="constant" primitiveType="int8">-5</type>
+        </composite>
+        <composite name="Decimal2NULL" description="Price type in Spectra" semanticType="Price">
+            <type name="mantissa" description="mantissa" presence="optional" minValue="-9223372036854775808"
+            maxValue="9223372036854775806" nullValue="9223372036854775807" primitiveType="int64"/>
+            <type name="exponent" description="exponent" presence="constant" primitiveType="int8">-2</type>
+        </composite>
+        <type name="DoubleNULL" presence="optional" primitiveType="double"/>
+
+        <!-- String and char -->
+        <type name="Char" primitiveType="char"/>
+        <type name="String3" length="3" primitiveType="char"/>
+        <type name="String4" length="4" primitiveType="char"/>
+        <type name="String6" length="6" primitiveType="char"/>
+        <type name="String25" length="25" primitiveType="char"/>
+        <type name="String31" length="31" primitiveType="char"/>
+        <type name="String256" length="256" primitiveType="char"/>
+        <type name="DoubleNULL" presence="optional" primitiveType="double"/>
+        <type name="SecurityIDSource" presence="constant" length="1" primitiveType="char">8</type>
+        <type name="MarketID" presence="constant" length="4" primitiveType="char">MOEX</type>
+        <composite name="Utf8String" description="Variable-length UTF-8 string">
+            <type name="length" primitiveType="uint16" semanticType="Length"/>
+            <type name="varData" length="0" primitiveType="uint8" semanticType="data" characterEncoding="UTF-8"/>
+        </composite><composite name="VarString" description="Variable-length ASCII string">
+            <type name="length" primitiveType="uint16" semanticType="Length"/>
+            <type name="varData" length="0" primitiveType="uint8" semanticType="data" characterEncoding="US-ASCII"/>
+        </composite>
+
+        <!-- Message header-->
+        <composite name="messageHeader">
+            <type name="blockLength" primitiveType="uint16" description="Длина тела сообщения"/>
+            <type name="templateId" primitiveType="uint16" description="Идентификатор сообщения"/>
+            <type name="schemaId" primitiveType="uint16" description="Идентификатор схемы сообщений"/>
+            <type name="version" primitiveType="uint16" description="Версия схемы сообщений"/>
+        </composite>
+
+        <!-- не ебу че это -->
+        <enum name="MDUpdateAction" encodingType="uInt8">
+            <validValue name="New" description="New">0</validValue>
+            <validValue name="Change" description="Change">1</validValue>
+            <validValue name="Delete" description="Delete">2</validValue>
+        </enum>
+        <enum name="MDEntryType" encodingType="Char">
+            <validValue name="Bid" description="Bid">0</validValue>
+            <validValue name="Offer" description="Offer">1</validValue>
+        <validValue name="EmptyBook" description="Empty Book">J</validValue>
+        </enum>
+        <enum name="SecurityAltIDSource" encodingType="Char">
+            <validValue name="ISIN" description="ISIN">4</validValue>
+            <validValue name="ExchangeSymbol" description="Exchange symbol">8</validValue>
+        </enum>
+        <enum name="SecurityTradingStatus" encodingType="uInt8NULL">
+            <validValue name="TradingHalt" description="Trading halt">2</validValue>
+            <validValue name="ReadyToTrade" description="Ready to trade">17</validValue>
+            <validValue name="NotAvailableForTrading" description="Not available for trading">18
+            </validValue>
+            <validValue name="NotTradedOnThisMarket" description="Not traded on this market">19</validValue>
+            <validValue name="UnknownOrInvalid" description="Unknown or Invalid status">20</validValue>
+            <validValue name="PreOpen" description="Pre-open">21</validValue>
+            <validValue name="DiscreteAuctionOpen" description="Discrete auction started">119</validValue>
+            <validValue name="DiscreteAuctionClose" description="Discrete auction ended">121</validValue>
+            <validValue name="InstrumentHalt" description="Instrument halt">122</validValue>
+            <validValue name="ClosePosition" description="Ready to trade. Close position">123</validValue>
+            <validValue name="DiscreteAuctionClosePosition" description="Discrete auction. Close position">124</validValue>
+        </enum>
+        <enum name="TradingSessionID" encodingType="uInt8NULL">
+            <validValue name="Day" description="Day session">1</validValue>
+            <validValue name="Morning" description="Morning session">3</validValue>
+            <validValue name="Evening" description="Evening session">5</validValue>
+        </enum>
+        <enum name="MarketSegmentID" encodingType="Char">
+            <validValue name="Derivatives" description="Derivatives">D</validValue>
+        </enum>
+        <enum name="TradSesStatus" encodingType="uInt8">
+            <validValue name="Halted" description="Session paused">1</validValue>
+            <validValue name="Open" description="Session started">2</validValue>
+            <validValue name="Closed" description="Session ended">3</validValue>
+            <validValue name="PreOpen" description="Session initiated">4</validValue>
+            </enum>
+        <enum name="TradSesEvent" encodingType="uInt8NULL">
+            <validValue name="TradingResumes"
+                        description="Trading resumed after intraday clearing session">0</validValue>
+            <validValue name="ChangeOfTradingSession"
+                        description="Start and end of trading session">1</validValue>
+            <validValue name="ChangeOfTradingStatus"
+                        description="Trading session status change">3</validValue>
+        </enum>
+        <enum name="NegativePrices" encodingType="uInt8">
+            <validValue name="NotEligible"
+                        description="Futures prices, price limits and options strikes are limited to be positive only">0</validValue>
+            <validValue name="Eligible"
+                        description="Futures prices and options strikes are not limited">1</validValue>
+        </enum>
+        <!-- Bitmasks-->
+        <set name="MDFlagsSet" encodingType="uInt64">
+            <choice name="Day" description="Orders and Trades: Day order">0</choice>
+            <choice name="IOC" description="Orders and Trades: IOC order">1</choice>
+            <choice name="NonQuote" description="Orders and Trades: Non quote entry">2</choice>
+            <choice name="EndOfTransaction" description="Orders and Trades: The end of matching
+            transaction">12</choice>
+            <choice name="DueToCrossCancel" description="Orders: The record results from cancelling the order
+            due to cross">13</choice>
+            <choice name="SecondLeg" description="Trades: Second leg of multileg trade">14</choice>
+            <choice name="FOK" description="Orders: FOK order">19</choice>
+            <choice name="Replace" description="Orders:The record results from replacing the order">20</choice>
+            <choice name="Cancel" description="Orders:The record results from cancelling the order">21</choice>
+            <choice name="MassCancel" description="Orders: The record results from mass cancelling">22</choice>
+            <choice name="Negotiated" description="Trades: Negotiated trade">26</choice>
+            <choice name="MultiLeg" description="Trades: Multileg trade">27</choice>
+            <choice name="CrossTrade" description="Orders: Flag of cancelling the left balance of the order
+            because of a cross-trade">29</choice>
+            <choice name="NegotiatedMatchByRef" description="Orders and Trades: Negotiated order or trade
+            matched by reference">31</choice>
+            <choice name="COD" description="Orders: The record results from cancelling an order via
+            'Cancel on Disconnect' service">32</choice>
+            <choice name="ActiveSide" description="Trades: Flag of aggressive side">41</choice>
+            <choice name="PassiveSide" description="Trades: Flag of passive side">42</choice>
+            <choice name="Synthetic" description="Orders and Trades: Flag of the synthetic order" >45</choice>
+            <choice name="RFS" description="Orders and Trades: RFS is the source of entry">46</choice>
+            <choice name="SyntheticPassive" description="Orders: Flag of the passive synthetic
+            order">57</choice>
+            <choice name="BOC" description="Orders: Book or Cancel order">60</choice>
+            <choice name="DuringDiscreteAuction" description="Orders and Trades: The record formed in the
+            process of discrete auction">62</choice>
+        </set>
+        <set name="MDFlags2Set" encodingType="uInt64">
+            <choice name="Zero" description="Empty set">0</choice>
+        </set>
+        <set name="FlagsSet" encodingType="uInt64">
+            <choice name="EveningOrMorningSession" description="Trading in the
+            evening or morning session">0</choice>
+            <choice name="AnonymousTrading" description="Anonymous trading">4</choice>
+            <choice name="PrivateTrading" description="Private trading">5</choice>
+            <choice name="DaySession" description="Trading in the day session">6</choice>
+            <choice name="MultiLeg" description="MultiLeg instrument">8</choice>
+            <choice name="Collateral" description="Collateral instrument">18</choice>
+            <choice name="IntradayExercise" description="Exercise in the intraday clearing session">19</choice>
+        </set>
+        <set name="MsgFlagsSet" encodingType="uint16">
+            <choice name="LastFragment" description="Message fragmentation flag">0</choice>
+            <choice name="StartOfSnapshot" description="Flag of the first message in the snapshot
+            for the instrument">1</choice>
+            <choice name="EndOfSnapshot" description="Flag of the last message in the snapshot
+            for the instrument">2</choice>
+            <choice name="IncrementalPacket" description="Incremental packet flag">3</choice>
+            <choice name="PossDupFlag" description="Flag of the order book retransmission
+            in the incremental stream">4</choice>
+        </set>
+
+        <!-- Groups -->
+        <composite name="groupSize" description="Repeating group dimensions" semanticType="NumInGroup">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint8"/>
+        </composite>
+        <composite name="groupSize2" description="Repeating group dimensions" semanticType="NumInGroup">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+    </types>
+    <!-- Session messages -->
+    <sbe:message name="Logon" id="1000" description="Connect to TCP Replay" blockLength="0">
+    </sbe:message>
+
+</sbe:messageSchema>
